@@ -30,6 +30,7 @@ urlpatterns = [
 
     path('getallproduction', views.get_all_production, name='get_all_production'),
     path('getproductionbydate', views.get_production_by_date, name='get_production_by_date'),
+    path('getproductionbyfilter', views.get_production_by_filter, name='get_production_by_filter'),
     path('gettopproduction', views.get_production_top5, name='get_production_top5'),
     path('download-csv/', views.get_production_by_date_download_csv, name='download_csv'),
     path('createproduction', views.create_production, name='get_all_production'),

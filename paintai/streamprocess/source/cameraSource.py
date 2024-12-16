@@ -32,10 +32,14 @@ class CAMERAMODEL():
             verbose=False
             # line_width=2,  # Adjust the line width for bounding boxes and text display
         )
-        logging.basicConfig(
-            filename=os.path.join(self.camera_config['logdir'],self.camera_config['camera']+'.log'), 
-            level=logging.DEBUG, format='%(asctime)s - %(name)s - %(threadName)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(self.camera_config['camera'])
+        self.logger.setLevel(logging.DEBUG)
+        time_rotation = logging.handlers.TimedRotatingFileHandler(filename=os.path.join(self.camera_config['logdir'],self.camera_config['camera']+'.log'),\
+                                                                when='W5',backupCount=1)
+        logFormat = logging.Formatter('%(asctime)s - %(name)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s')
+        time_rotation.setFormatter(logFormat)
+        time_rotation.setLevel(logging.DEBUG)
+        self.logger.addHandler(time_rotation)
         #self.camera_config = camera_config
         self.rtsp_url = self.camera_config['rtsp_url']
         self.update_duration = 60

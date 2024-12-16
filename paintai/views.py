@@ -174,6 +174,23 @@ def get_production_by_date(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
 
+def get_production_by_filter(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            starttime = datetime.strptime(data.get("starttime"), "%Y-%m-%dT%H:%M:%S.%f")
+            endtime = datetime.strptime(data.get("endtime"), "%Y-%m-%dT%H:%M:%S.%f")
+            camera_id = data.get("cameraid", -1)
+            product_id = data.get("productid", -1)
+            products = get_product_counts_bycamproid(starttime, endtime, camera_id, product_id)
+            product_list =  list(products)
+            return JsonResponse({"product_productions": product_list}, status=200,safe=False)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+
+
+
 def get_production_top5(request):
     if request.method == "GET":
         try:

@@ -2,8 +2,8 @@
 from .models import ProductProduction, Camera, Product
 from datetime import timedelta
 from django.utils import timezone
-from django.db.models import Sum
-
+# from django.db.models import Sum
+from django.db.models import Q, Sum
 
 # Initialize the in-memory cache
 product_cache = {}
@@ -124,6 +124,29 @@ def get_product_counts(start_date, end_date):
     )
     print(results)
     return results
+
+
+
+def get_product_counts_bycamproid(start_date, end_date, camera_id=-1, product_id=-1):
+    # Build the filter criteria dynamically
+    filters = Q(starttime__gte=start_date, endtime__lte=end_date)
+    if camera_id != -1:
+        filters &= Q(cameraid=camera_id)
+    if product_id != -1:
+        filters &= Q(productid=product_id)
+    
+    results = (
+        ProductProduction.objects
+        .filter(filters)  # Apply the dynamic filters
+        .values('cameraid', 'productid', 'productid__name')  # Group by productid
+        .annotate(total_count=Sum('count'))  # Sum up the count field
+    )
+    print(results)
+    return results
+
+
+
+
 
 def get_productProduction_top_five_last_day():
     last_24_hours = timezone.now() - timedelta(hours=24)
